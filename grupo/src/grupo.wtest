@@ -1,0 +1,410 @@
+import grupo.*
+
+// Cuarta Entrega - 1er Corrección
+
+describe "Tests de la Cuarta Entrega" {
+	
+	// Variables de la 1er Entrega
+	
+	var joaquin = new MusicoDeGrupo(5,20,'Pimpinela',new Larguero(300),new CobroEnSolitario(100))	//Adaptados a la 4ta Entrega
+	var lucia = new VocalistaPopular(70,'Pimpinela',new Palabrero('familia'),new CobroPorCapacidad(500,5000))	
+		
+	var cisne = new Cancion('Cisne',312,'Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar')
+	var laFamilia = new Cancion('La Familia',264,'Quiero brindar por mi gente sencilla, por el amor brindo por la familia')
+	var presentacion20042017 = new Presentacion(new Date(20,04,2017),lunaPark,[luisAlberto,joaquin,lucia])
+	var presentacion15112017 = new Presentacion(new Date(15,11,2017),laTrastienda,[luisAlberto,joaquin,lucia])
+	var presentacion05082017 = new Presentacion(new Date(05,08,2017),laTrastienda,[])
+	var presentacion08082017 = new Presentacion(new Date(08,08,2017),laTrastienda,[])
+	
+	// Variables de la 2da Entrega
+	
+	var kike = new MusicoDeGrupo(20,60,'',imparero,new CobroPorFecha(new Date(08,01,2018),4000,0.5))	//Adaptados a la 4ta Entrega
+	var soledad = new VocalistaPopular(55,'',new Palabrero('amor'),new CobroEnSolitario(6000))
+	
+	//Álbum de Joaquín
+	var especialLaFamilia = new Album('Especial la Familia',[laFamilia],new Date(17,06,1992),100000,89000)
+	//Álbum de Soledad
+	var eres = new Cancion('Eres',145,'Eres lo mejor que me pasó en la vida, no tengo duda, no habrá más nada después de ti. Eres lo que le dio brillo al día a día, y así será por siempre, no cambiará, hasta el final de mis días')
+	var corazonAmericano = new Cancion('Corazón Americano',154,'Canta corazón, canta más alto, que tu pena al fin se va marchando, el nuevo milenio ha de encontrarnos, junto corazón, como soñamos')
+	var laSole = new Album('La Sole',[eres,corazonAmericano],new Date(04,02,2005),200000,130000)
+	//Álbumes de Luis Alberto
+		//Para los Árboles
+		var almaDeDiamante = new Cancion('Alma de Diamante',216,'Ven a mí con tu dulce luz alma de diamante. Y aunque el sol se nuble después sos alma de diamante. Cielo o piel silencio o verdad sos alma de diamante. Por eso ven así con la humanidad alma de diamante')
+		var paraLosArboles = new Album('Para los Árboles',[cisne,almaDeDiamante],new Date(31,03,2003),50000,49000)
+		//Just Crisantemo
+		var crisantemo = new Cancion('Crisantemo',175,'Tócame junto a esta pared, yo quede por aquí... cuando no hubo más luz... quiero mirar a través de mi piel... Crisantemo, que se abrió... encuentra el camino hacia el cielo')
+		var justCrisantemo = new Album('Just Crisantemo',[crisantemo],new Date(05,12,2007),28000,27500)
+		
+	// Variables de la 3er Entrega
+		
+		var remixLaFamilia = new Remix(laFamilia)
+		var mashupAlmaDeDiamYCrisantemo = new Mashup([almaDeDiamante,crisantemo])
+		var aliciaEnElPais = new Cancion ('Alicia en el País',510,'Quién sabe Alicia, este país no estuvo hecho porque sí. Te vas a ir, vas a salir pero te quedas, ¿dónde más vas a ir? Y es que aquí, sabes el trabalenguas, trabalenguas, el asesino te asesina, y es mucho para ti. Se acabó ese juego que te hacía feliz')
+		
+		var letra = new Criterio({unaC => unaC.longLetra()})
+		
+		var habilidadSuficiente = new Restriccion({unMusico => return (unMusico.habilidad() > 70)},"El músico no tiene habilidad suficiente")
+		var esCompositor = new Restriccion({unMusico => return !(unMusico.albumes().isEmpty())},"El músico no es compositor")
+		var sabeAliciaEnElPais = new Restriccion({unMusico => return (unMusico.puedeEjecutarBien(aliciaEnElPais))},"El músico no puede interpretar 'Alicia en el País'")	
+		
+	//Variables de la 4ta Entrega
+	
+		var prixDAmi = new Lugar(150)
+		var laCueva = new Lugar(14000)
+		var cachorro = new Representante('cachorro',1982)
+		var pimpisole = new Grupo([soledad,joaquin,lucia],cachorro)
+		var elEternoRetorno = new Grupo([kike,luisAlberto],new Representante('Félix',500))
+		var presentacionEnPrixDAmi = new Presentacion(new Date(30,06,2017),prixDAmi,[joaquin,soledad,elEternoRetorno])
+		var presentacionEnLaCueva = new Presentacion(new Date(05,01,2018),laCueva,[pimpisole])
+		
+		var listaDePrueba = [corazonAmericano,eres,laFamilia,cisne,almaDeDiamante,aliciaEnElPais,crisantemo]
+		
+		
+	fixture {
+		joaquin.albumNuevo(especialLaFamilia)
+		soledad.albumNuevo(laSole)
+		luisAlberto.albumNuevo(paraLosArboles)
+		luisAlberto.albumNuevo(justCrisantemo)
+		pdepalooza.agregarRestriccion(habilidadSuficiente)
+		pdepalooza.agregarRestriccion(esCompositor)
+		pdepalooza.agregarRestriccion(sabeAliciaEnElPais)
+	}
+	
+	// Tests de regresión (Primer Entrega)
+		
+test "Joaquín canta en el grupo Pimpinela. Tiene una habilidad de 25" {
+	assert.equals(25,joaquin.habilidad())
+	}
+
+test "Joaquín deja el grupo Pimpinela. Tiene una habilidad de 20" {
+	joaquin.dejarGrupo()
+	assert.equals(20,joaquin.habilidad())
+	}
+
+test "Lucía canta en el grupo Pimpinela. Tiene una habilidad de 50" {
+	assert.equals(50,lucia.habilidad())
+	}
+
+test "Lucía deja el grupo Pimpinela. Tiene una habilidad de 70" {
+	lucia.dejarGrupo()
+	assert.equals(70,lucia.habilidad())
+	}
+
+test "Luis Alberto toca con la Fender. Tiene una habilidad de 80" {
+	luisAlberto.asignarGuitarra(fender)
+	assert.equals(80,luisAlberto.habilidad())
+	}
+
+test "Luis Alberto toca con la Gibson sana. Tiene una habilidad de 100" {
+	luisAlberto.asignarGuitarra(gibson)
+	assert.equals(100,luisAlberto.habilidad())
+	}
+
+test "Luis Alberto toca con la Gibson dañada. Tiene una habilidad de 40" {
+	gibson.romperGuitarra()
+	luisAlberto.asignarGuitarra(gibson)
+	assert.equals(40,luisAlberto.habilidad())
+	}
+
+/* test "Joaquín interpreta bien la canción laFamilia" {
+	assert.notThat(joaquin.puedeEjecutarBien(laFamilia))
+	} */
+
+test "Joaquín interpreta bien la canción cisne" {
+	assert.that(joaquin.puedeEjecutarBien(cisne))
+	}
+
+test "Lucía intepreta bien la canción laFamilia" {
+	assert.that(lucia.puedeEjecutarBien(laFamilia))
+	}
+
+/* test "Lucía no interpreta bien la canción cisne" {
+	assert.notThat(lucia.puedeEjecutarBien(cisne))
+	} */
+
+test "Luis Alberto interpreta bien la canción laFamilia" {
+	assert.that(luisAlberto.puedeEjecutarBien(laFamilia))
+	}
+
+test "Luis Alberto interpreta bien la canción cisne" {
+	assert.that(luisAlberto.puedeEjecutarBien(cisne))
+	}
+
+test "Joaquín cobra $50 por la presentación en el Luna Park" {
+	assert.equals(50,joaquin.cuantoCobraEn(presentacion20042017))
+	}
+
+/* test "Joaquín toca solo en La Trastienda. Cobra $100 en la presentación del 15/11/2017" {
+	presentacion15112017.quitarMusico(lucia)
+	presentacion15112017.quitarMusico(luisAlberto)
+	assert.equals(100,joaquin.cuantoCobraEn(presentacion15112017))
+	} Con la implementación nueva este test ya no da el mismo resultado */
+
+test "La capacidad de La Trastienda el 05/08/2017 es de 700 por ser sábado" {
+	assert.equals(700,laTrastienda.capacidadEn(presentacion05082017))
+	}
+
+test "La capacidad de La Trastienda el 08/08/2017 es de 400 por no ser sábado" {
+	assert.equals(400,laTrastienda.capacidadEn(presentacion08082017))
+	}
+
+test "Lucía cobra $500 por la presentación en el Luna Park" {
+	assert.equals(500,lucia.cuantoCobraEn(presentacion20042017))
+	}
+
+test "Lucía cobra $400 por la presentación en La Trastienda" {
+	assert.equals(400,lucia.cuantoCobraEn(presentacion15112017))
+	}
+
+test "Luis Alberto cobra $1000 por la presentación en el Luna Park" {
+	assert.equals(1000,luisAlberto.cuantoCobraEn(presentacion20042017))
+	}
+
+test "Luis Alberto cobra $1200 por la presentación en La Trastienda" {
+	assert.equals(1200,luisAlberto.cuantoCobraEn(presentacion15112017))
+	}
+
+test "El costo total de la presentación en el Luna Park es de $1500" {
+	assert.equals(1550,presentacion20042017.costoDePresentacion())
+	}
+
+test "El costo total de la presentacion en La Trastienda es de $1650" {
+	assert.equals(1650,presentacion15112017.costoDePresentacion())
+	}
+	
+	//Tests de regresión (Segunda Entrega)
+	
+test "La canción 'Crisantemo' es corta" {
+	assert.that(crisantemo.esCorta())
+	}
+
+test "La canción 'Alma de Diamante' no es corta" {
+	assert.notThat(almaDeDiamante.esCorta())
+	}
+	
+test "Soledad es minimalista" {
+	assert.that(soledad.esMinimalista())
+	}
+	
+test "Luis Alberto no es minimalista" {
+	assert.notThat(luisAlberto.esMinimalista())
+	}
+
+test "Joaquín no es minimalista" {
+	assert.notThat(joaquin.esMinimalista())
+	}
+
+test "Las canciones 'Crisantemo' y 'Alma de Diamante' de Luis Alberto contienen la palabra 'cielo'" {
+	assert.equals(['Alma de Diamante','Crisantemo'],luisAlberto.cancionesCon('cielo'))
+	}
+
+test "Ninguna canción de Luis Alberto contiene la palabra 'pujante'" {
+	assert.equals([],luisAlberto.cancionesCon('pujante'))
+	}
+	
+test "La obra de Kike dura 0 segundos" {
+	assert.equals(0,kike.duracionDeObra())
+	}
+	
+test "La obra de Soledad dura 299 segundos" {
+	assert.equals(299,soledad.duracionDeObra())
+	}
+
+test "La obra de Luis Alberto dura 703 segundos" {
+	assert.equals(703,luisAlberto.duracionDeObra())
+	}
+	
+test "La canción más larga del álbum 'Para los árboles' es 'Alma de Diamante'" {
+	assert.equals(almaDeDiamante,paraLosArboles.cancionMaxSegun(letra))
+	}
+
+test "La canción más larga del álbum 'La Sole' es 'Eres'" {
+	assert.equals(eres,laSole.cancionMaxSegun(letra))
+	}
+
+test "La canción más larga del álbum 'Especial la Familia' es 'La Familia'" {
+	assert.equals(laFamilia,especialLaFamilia.cancionMaxSegun(letra))
+	}
+
+test "Luis Alberto la pegó" {
+	assert.that(luisAlberto.laPego())
+	}
+
+test "Soledad no la pegó" {
+	assert.notThat(soledad.laPego())
+	}
+
+test "Joaquín la pegó" {
+	assert.that(joaquin.laPego())
+	}
+
+	// Tests de regresión (Tercer Entrega)
+	
+test "Joaquín ahora canta bien 'La Familia'" {
+	assert.that(joaquin.puedeEjecutarBien(laFamilia))
+	}
+
+test "Joaquín canta bien la canción 'Cisne'" {
+	assert.that(joaquin.puedeEjecutarBien(cisne))
+	}
+
+test "Lucía canta bien la canción 'La Familia' como solista" {
+	lucia.dejarGrupo()
+	assert.that(lucia.puedeEjecutarBien(laFamilia))
+	}
+
+test "Lucía puede ejecutar bien 'Cisne' como solista porque tiene habilidad suficiente" {
+	lucia.dejarGrupo()
+	assert.that(lucia.puedeEjecutarBien(cisne))
+	}
+
+test "Lucía no puede ejecutar bien 'Cisne' en grupo" {
+	lucia.grupo('Pimpinela')
+	assert.notThat(lucia.puedeEjecutarBien(cisne))
+	}
+
+test "Luis Alberto canta bien la canción 'La Familia'" {
+	assert.that(luisAlberto.puedeEjecutarBien(laFamilia))
+	}
+
+test "Luis Alberto canta bien la canción 'Cisne'" {
+	assert.that(luisAlberto.puedeEjecutarBien(cisne))
+	}
+
+// Casos nuevos de la 3er Entrega
+
+test "La canción más larga de 'Especial la Familia' según la duración es 'La Familia'" {
+	assert.equals(laFamilia,especialLaFamilia.cancionMaxSegun(duracion))
+	}
+
+test "La canción más larga de 'La Sole' según la duración es 'Corazón Americano'" {
+	assert.equals(corazonAmericano,laSole.cancionMaxSegun(duracion))
+	}
+
+test "La canción más larga de 'La Sole' según la letra es 'Eres'" {
+	assert.equals(eres,laSole.cancionMaxSegun(letra))
+	}
+
+test "El remix de 'La Familia' dura 792 segundos" {
+	assert.equals(792,remixLaFamilia.duracion())
+	}
+
+test "La letra del remix de 'La Familia' es la correcta" {
+	assert.equals("mueve tu cuerpo baby Quiero brindar por mi gente sencilla, por el amor brindo por la familia yeah oh yeah",remixLaFamilia.letra())
+	}
+
+test "La duración del mashup de 'Alma De Diamante' y 'Crisantemo' es de 216 segundos" {
+	assert.equals(216,mashupAlmaDeDiamYCrisantemo.duracion())
+	}
+
+test "La letra del mashup de 'Alma de Diamante' y 'Crisantemo' es la correcta" {
+	var letraM = "Ven a mí con tu dulce luz alma de diamante. Y aunque el sol se nuble después sos alma de diamante. Cielo o piel silencio o verdad sos alma de diamante. Por eso ven así con la humanidad alma de diamante Tócame junto a esta pared, yo quede por aquí... cuando no hubo más luz... quiero mirar a través de mi piel... Crisantemo, que se abrió... encuentra el camino hacia el cielo"
+	assert.equals(letraM,mashupAlmaDeDiamYCrisantemo.letra())
+	}
+
+test "Se puede agregar a Luis Alberto al Pdepalooza" {
+	luisAlberto.asignarGuitarra(gibson) //Para que pueda evaluarse su habilidad
+	pdepalooza.agregarMusico(luisAlberto)
+	assert.equals(pdepalooza.estaEnLaPresentacion(luisAlberto))	//
+	}
+
+test "Intentar agregar a Joaquín al Pdepalooza genera un error" {
+	assert.throwsException({pdepalooza.agregarMusico(joaquin)})
+	}
+	
+test "Aún luego de incrementar la habilidad de Lucía no es posible agregarla al Pdepalooza" {
+	lucia.habilidad(90)
+	assert.throwsException({pdepalooza.agregarMusico(lucia)})
+	}
+	
+test "Luego de incrementar la habilidad de Soledad es posible agregarla al Pdepalooza" {
+	soledad.habilidad(80)
+	pdepalooza.agregarMusico(soledad)
+	assert.that(pdepalooza.estaEnLaPresentacion(soledad))
+	}
+	
+//Tests de la Cuarta Entrega
+	
+	test "Joaquín puede interpretar bien 'La Familia' aún siendo imparero" {
+		joaquin.categoriaEjecucion(imparero)
+		assert.that(joaquin.puedeEjecutarBien(laFamilia))
+	}
+	
+	test "Joaquín no puede interpretar bien 'Cisne' al ser imparero" {
+		joaquin.categoriaEjecucion(imparero)
+		assert.notThat(joaquin.puedeEjecutarBien(cisne))
+	}
+	
+	test "Kike puede interpretar bien 'Corazón Americano','Eres','Alma de Diamante' y 'Crisantemo' como palabrero 'de'" {
+		kike.categoriaEjecucion(new Palabrero(' de'))
+		assert.equals([corazonAmericano,eres,almaDeDiamante,crisantemo],kike.cualesPuedeTocarBien(listaDePrueba))
+	}
+	
+	test "Joaquín puede interpretar bien 'La Familia','Cisne' y 'Alicia en el País' de la lista" {
+		assert.equals([laFamilia,cisne,aliciaEnElPais],joaquin.cualesPuedeTocarBien(listaDePrueba))
+	}
+	
+	test "Joaquín puede interpretar bien 'La Familia' como palabrero entre las canciones de la lista" {
+		joaquin.categoriaEjecucion(new Palabrero('xilofón'))
+		assert.equals([laFamilia],joaquin.cualesPuedeTocarBien(listaDePrueba))
+	}
+	
+	test "Lucía como imparera sólo puede interpretar bien 'Eres' y 'Crisantemo'" {
+		lucia.categoriaEjecucion(imparero)
+		assert.equals([eres,crisantemo],lucia.cualesPuedeTocarBien(listaDePrueba))
+	}
+	
+	test "Joaquín cobra $1200 en la presentación de PrixD'Ami cobrando por fecha" {
+		joaquin.categoriaDeCobro(new CobroPorFecha(new Date(01,02,2017),1000,0.2))
+		assert.equals(1200,joaquin.cuantoCobraEn(presentacionEnPrixDAmi))
+	}
+	
+	test "Joaquín cobra $1000 en la nueva fecha de la presentación en PrixD'Ami" {
+		presentacionEnPrixDAmi.cambiarFecha(new Date(24,01,2017))
+		joaquin.categoriaDeCobro(new CobroPorFecha(new Date(01,02,2017),1000,0.2))
+		assert.equals(1000,joaquin.cuantoCobraEn(presentacionEnPrixDAmi))
+	}
+	
+	test "Si no cambiamos en nada a Joaquín cobra $50 en PrixD'Ami" {
+		assert.equals(50,joaquin.cuantoCobraEn(presentacionEnPrixDAmi))
+	}
+	
+	test "Joaquín cobra $2400 en PrixD'Ami si cambiamos su categoría a cobro por capacidad" {
+		joaquin.categoriaDeCobro(new CobroPorCapacidad(2500,13000))
+		assert.equals(2400,joaquin.cuantoCobraEn(presentacionEnPrixDAmi))
+	}
+	
+	test "Joaquín cobra 2500 en La Cueva si cambiamos su categoría a cobro por capacidad" {
+		joaquin.categoriaDeCobro(new CobroPorCapacidad(2500,13000))
+		assert.equals(2500,joaquin.cuantoCobraEn(presentacionEnLaCueva))
+	}
+	
+	test "'El eterno retorno' cobra $5500 en la presentación de PrixD'Ami" {
+		assert.equals(5500,elEternoRetorno.cuantoCobraEn(presentacionEnPrixDAmi))
+	}
+	
+	test "El productor del show de PrixD'Ami debe pagar $8550" {
+		assert.equals(8550,presentacionEnPrixDAmi.costoDePresentacion())
+	}
+	
+	test "El productor del show de La Cueva debe pagar $5532" {
+		assert.equals(5532,presentacionEnLaCueva.costoDePresentacion())
+	}
+	
+	test "La habilidad de 'El eterno retorno' es de 154" {
+		assert.equals(154,elEternoRetorno.habilidad())
+	}
+	
+	test "La magia del show en PrixD'Ami es de 234" {
+		assert.equals(234,presentacionEnPrixDAmi.magia())
+	}
+	
+	test "Pimpisole no puede interpretar bien la canción 'Cisne'" {
+		assert.notThat(pimpisole.puedeEjecutarBien(cisne))
+	}
+	
+	test "'El eterno retorno' puede interpretar bien la canción 'Crisantemo'" {
+		assert.that(elEternoRetorno.puedeEjecutarBien(crisantemo))
+	}
+ 
+}
